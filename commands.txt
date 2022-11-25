@@ -1,0 +1,40 @@
+### For starting 
+./start.sh 
+
+### starting flink
+docker-compose exec sql-client ./sql-client.sh
+
+### Creating table in flink
+CREATE TABLE courses(
+    course_id INT,
+    course_name VARCHAR
+    ) WITH (
+    'connector' = 'kafka',
+    'topic' = 'demo.class.courses',
+    'properties.bootstrap.servers' = 'broker1:19093',
+    'properties.group.id' = 'test-consumer-group',
+    'value.format' = 'json',
+    'scan.startup.mode' = 'earliest-offset'
+    );
+
+### go into postgres
+psql -U postgres -d demo;
+
+### see table
+\dt
+\dn
+select * from class.courses;
+### 
+
+
+### bind: address already in use - error
+sudo lsof -i -P -n | grep LISTEN
+
+### seeing topics
+docker exec -it <kafka-container-id> /bin/bash
+/usr/bin/kafka-topics --list --zookeeper zookeeper:2181
+/usr/bin/kafka-console-consumer --bootstrap-server broker0:19092 --topic demo.class.courses --from-beginning
+
+### seeing connectors
+curl localhost:8083/connectors/
+curl localhost:8083/connectors/postgres-sink/status

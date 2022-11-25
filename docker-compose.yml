@@ -155,19 +155,6 @@ services:
 
   ##ALL SOURCES ADDED HERE
 
-  mysql:
-    # image: mysql:5.7
-    build: ./src_mysql
-    ports:
-      - "3306:3306"
-    container_name: mysql
-    environment:
-      - MYSQL_ROOT_PASSWORD=admin123
-      - MYSQL_USER=mysqluser
-      - MYSQL_PASSWORD=mysqlpw
-    volumes:
-      - $PWD:/home/config
-
   postgres:
     # image: debezium/postgres:11
     build: ./src_postgres
@@ -175,20 +162,12 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_HOST: postgres
+      POSTGRES_DB: demo
     command: postgres -c config_file=/home/config/src_postgres/postgresql.conf
     ports:
       - 5432:5432
     volumes:
       - $PWD:/home/config
-
-  producer:
-    build: ./producer
-    depends_on:
-      - zookeeper
-      - broker0
-      - broker1
-      - broker2
-      - schema-registry
 
   mongo1:
     image: "mongo:4.0"

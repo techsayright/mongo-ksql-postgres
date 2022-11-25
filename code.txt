@@ -81,7 +81,7 @@ and listing the available topics:
 ```
 
 ```
-/usr/bin/kafka-console-consumer --bootstrap-server localhost:9092 --topic test --from-beginning
+/usr/bin/kafka-console-consumer --bootstrap-server broker0:19092 --topic demo.class.courses --from-beginning
 
 ```
 

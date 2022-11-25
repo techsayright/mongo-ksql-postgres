@@ -5,7 +5,7 @@
 # read name
 
 echo =======================================
-echo Hey Darshan, Welcome
+echo Hello welcome to flink 
 echo =======================================
 
 
@@ -31,10 +31,5 @@ sleep 10
 
 echo Starting all services------------------
 docker-compose up -d
-
-echo "Running Flink Queries(Please Wait)-------------------"
-sleep 45
-
-./flink_query.sh
 
 echo completed process
