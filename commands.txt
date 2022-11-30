@@ -17,6 +17,19 @@ CREATE TABLE courses(
     'scan.startup.mode' = 'earliest-offset'
     );
 
+canal-json
+csv
+debezium-json
+json
+maxwell-json
+raw
+
+### see data in flink
+select * from courses;
+
+### drop table
+drop table courses;
+
 ### go into postgres
 psql -U postgres -d demo;
 
@@ -24,7 +37,15 @@ psql -U postgres -d demo;
 \dt
 \dn
 select * from class.courses;
-### 
+
+### for mongo
+mongo
+use class;
+db.courses.find().limit(5)
+db.courses.remove({"course_id" : 1});
+MATCH (n:mongo) where n.course_id=2 return n
+db.courses.insert({course_id:500,course_name:'one'})
+db.courses.update({course_id:1},{$set:{course_name:'abcd'}})
 
 
 ### bind: address already in use - error
@@ -37,4 +58,4 @@ docker exec -it <kafka-container-id> /bin/bash
 
 ### seeing connectors
 curl localhost:8083/connectors/
-curl localhost:8083/connectors/postgres-sink/status
+curl localhost:8083/connectors/pgsink/status

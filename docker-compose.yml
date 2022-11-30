@@ -121,37 +121,47 @@ services:
       CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 3
       CONNECT_REPLICATION_FACTOR: 3
       CONNECT_KEY_CONVERTER: org.apache.kafka.connect.storage.StringConverter
-      CONNECT_VALUE_CONVERTER: org.apache.kafka.connect.storage.StringConverter
+      CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
       CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
       CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components"
       CONNECT_LOG4J_LOGGERS: org.apache.zookeeper=ERROR,org.I0Itec.zkclient=ERROR,org.reflections=ERROR
 
-  sql-client:
-    build: ./client-image
-    image: demo/debezium-flink-sql
+  ksqldb-server:
+    image: confluentinc/cp-ksqldb-server:latest
+    hostname: ksqldb-server
+    container_name: ksqldb-server
     depends_on:
       - broker0
       - broker1
       - broker2
-      - jobmanager
-    environment:
-      FLINK_JOBMANAGER_HOST: jobmanager
-      ZOOKEEPER_CONNECT: zookeeper
-      KAFKA_BOOTSTRAP: kafka
-  jobmanager:
-    image: flink:1.12.1-scala_2.11
+      - connect
     ports:
-      - "8082:8082"
-    command: jobmanager
+      - "8088:8088"
     environment:
-      - JOB_MANAGER_RPC_ADDRESS=jobmanager
-  taskmanager:
-    image: flink:1.12.1-scala_2.11
+      KSQL_CONFIG_DIR: "/etc/ksql"
+      KSQL_BOOTSTRAP_SERVERS: "broker0:19092,broker1:19093,broker2:19094"
+      KSQL_HOST_NAME: ksqldb-server
+      KSQL_LISTENERS: "http://0.0.0.0:8088"
+      KSQL_CACHE_MAX_BYTES_BUFFERING: 0
+      KSQL_KSQL_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
+      KSQL_PRODUCER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor"
+      KSQL_CONSUMER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor"
+      KSQL_KSQL_CONNECT_URL: "http://connect:8083"
+      KSQL_KSQL_LOGGING_PROCESSING_TOPIC_REPLICATION_FACTOR: 3
+      KSQL_KSQL_LOGGING_PROCESSING_TOPIC_AUTO_CREATE: "true"
+      KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE: "true"
+
+  ksqldb-cli:
+    image: confluentinc/cp-ksqldb-cli:latest
+    container_name: ksqldb-cli
     depends_on:
-      - jobmanager
-    command: taskmanager
-    environment:
-      - JOB_MANAGER_RPC_ADDRESS=jobmanager
+      - broker0
+      - broker1
+      - broker2
+      - connect
+      - ksqldb-server
+    entrypoint: /bin/sh
+    tty: true
 
   ##ALL SOURCES ADDED HERE
 

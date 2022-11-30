@@ -5,7 +5,7 @@
 # read name
 
 echo =======================================
-echo Hello welcome to flink 
+echo Hello welcome Darshan
 echo =======================================
 
 
@@ -32,4 +32,4 @@ sleep 10
 echo Starting all services------------------
 docker-compose up -d
 
-echo completed process
+echo process completed

@@ -7,14 +7,13 @@
     "database.whitelist": "class",
     "collection.whitelist": "class.courses",
     "tasks.max": "1",
-    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
     "value.converter.schemas.enable": true,
-    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
     "key.converter.schemas.enable": false,
     "plugin.name": "wal2json",
     "transforms": "mongoflatten",
     "transforms.mongoflatten.type": "io.debezium.connector.mongodb.transforms.ExtractNewDocumentState",
-    "transforms.mongoflatten.drop.tombstones": false
+    "transforms.mongoflatten.drop.tombstones": false,
+    "transforms.mongoflatten.delete.handling.mode": "drop",
+    "transforms.mongoflatten.add.headers": "op"
   }
 }
-
