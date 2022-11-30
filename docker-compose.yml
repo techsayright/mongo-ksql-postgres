@@ -106,7 +106,6 @@ services:
       - schema-registry
     ports:
       - "8083:8083"
-    env_file: .env_kafka_connect
     environment:
       CONNECT_BOOTSTRAP_SERVERS: "broker0:19092,broker1:19093,broker2:19094"
       CONNECT_REST_ADVERTISED_HOST_NAME: connect
